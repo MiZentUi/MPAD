@@ -1,0 +1,65 @@
+@{
+    ViewBag.Title = "Index";
+}
+
+<h1>Laboratory work 1</h1>
+<h2>List</h2>
+<ol type="A">
+    <li>first item</li>
+    <li>second item</li>
+</ol>
+<h2>Form</h2>
+<form method="post" action="">
+    <div class="row mb-3">
+        <div class="col-sm-10 offset-sm-2">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="checkbox1" id="gridcheck1">
+                <label class="form-check-label" for="gridcheck1">
+                    first checkbox
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-10 offset-sm-2">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="checkbox2" id="gridcheck2">
+                <label class="form-check-label" for="gridcheck2">
+                    second checkbox
+                </label>
+            </div>
+        </div>
+    </div>
+    <fieldset class="d-flex flex-row gap-3 mb-3 offset-sm-2">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="radio" id="gridRadios1" value="1" checked>
+            <label class="form-check-label" for="gridRadios1">
+                first radio
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="radio" id="gridRadios2" value="2">
+            <label class="form-check-label" for="gridRadios2">
+                second radio
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="radio" id="gridRadios3" value="3">
+            <label class="form-check-label" for="gridRadios3">
+                third radio
+            </label>
+        </div>
+    </fieldset>
+    <div class="row mb-3">
+        <label for="inputLogin3" class="col-sm-2 col-form-label">Login</label>
+        <div class="col-sm-10">
+            <input type="login" name="login" class="form-control" id="inputLogin3" placeholder="Write login">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+        <div class="col-sm-10">
+            <input type="password" name="password" class="form-control" id="inputPassword3"
+                   placeholder="Write password">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Send</button>
+</form>
