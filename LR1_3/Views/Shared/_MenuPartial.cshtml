@@ -1,0 +1,13 @@
+@{
+    string GetActiveClass(string name)
+    {
+        return ViewContext.RouteData.Values["controller"]?.ToString() == name ? "active" : "";
+    }
+}
+
+<a class="navbar-brand" href="#">Labs</a>
+<div class="navbar-nav">
+    <a class="nav-item nav-link @GetActiveClass("Home")" asp-controller="home" asp-action="Index">LR1_3</a>
+    <a class="nav-item nav-link @GetActiveClass("Product")" asp-controller="product" asp-action="Index">Catalog</a>
+    <a class="nav-item nav-link @GetActiveClass("Admin")" asp-area="admin" asp-page="/Index">Administration</a>
+</div>

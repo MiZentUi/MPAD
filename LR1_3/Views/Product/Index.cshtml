@@ -1,0 +1,99 @@
+@model ListModel<Product>
+
+@{
+    var request = ViewContext.HttpContext.Request;
+    var returnUrl = request.Path + request.QueryString.ToUriComponent();
+    string? service = request.Query["service"].ToString();
+
+    string GetActiveClass(string name)
+    {
+        return ViewContext.RouteData.Values["controller"]?.ToString() == name ? "active" : "";
+    }
+
+    int totalPages = 2;
+    int prev = Model.CurrentPage == 1 ? 1 : ViewBag.CurrentPage - 1;
+    int next = Model.CurrentPage == totalPages ? totalPages : ViewBag.CurrentPage + 1;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ProductList</title>
+</head>
+
+<body>
+
+    <h1>Products</h1>
+    <div class="col-2 border-2">
+        <ul class="nav ">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                   aria-expanded="false">Services</a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" asp-controller="product" asp-route-service=@null>All</a>
+                    </li>
+                    @foreach (var item in ViewBag.Services)
+                    {
+                        <li>
+                            <a class="dropdown-item" asp-controller="product" asp-route-service="@item.NormalizedName">
+                                @item.Name
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model.Items)
+        {
+            <div class="col">
+                <div class="card">
+                    <img src="@item.Image" class="card-img-top" alt="@item.Name" />
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text">@item.Description</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center">
+                        <a type="button" class="btn btn-primary @GetActiveClass("Cart")" asp-controller="cart"
+                           asp-action="Add" asp-route-id="@item.Id" asp-route-return-url="@returnUrl">Add to
+                            cart</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <nav class="d-flex justify-content-center" aria-label="Pages">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" aria-label="Previous" asp-controller="product" asp-route-service="@service"
+                   asp-route-pageno="@prev">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="product" asp-route-service="@service" asp-route-pageno="@i">
+                        @i
+                    </a>
+                </li>
+            }
+            <li class="page-item">
+                <a class="page-link" aria-label="Next" asp-controller="product" asp-route-service="@service"
+                   asp-route-pageno="@next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+</body>
+
+</html>
