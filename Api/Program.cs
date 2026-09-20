@@ -1,4 +1,5 @@
 using Api.Data;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Api.EndPoints;
 
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+
 var app = builder.Build();
 
 await DbInitializer.SeedData(app);
@@ -27,7 +30,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 app.UseHttpsRedirection();
-app.MapProductEndpoints();
+app.MapIEndpoints();
 app.MapServiceEndpoints();
 
 app.Run();
