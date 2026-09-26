@@ -105,15 +105,22 @@ public class ApiProductService : IProductService
 
     public async Task<ResponseData<Product>> CreateProductAsync(Product product, IFormFile? formFile)
     {
-        product.Image = "Images/noimage.jpg";
+        product.Image = "images/noimage.jpg";
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Post,
             RequestUri = _httpClient.BaseAddress
         };
-        request.Content =
-            new StringContent(JsonSerializer.Serialize(product, _serializerOptions),
-                Encoding.UTF8, "application/json");
+
+        var content = new MultipartFormDataContent();
+        if (formFile is not null)
+        {
+            var streamContent = new StreamContent(formFile.OpenReadStream());
+            content.Add(streamContent, "file", formFile.FileName);
+        }
+        content.Add(new StringContent(JsonSerializer.Serialize(product, _serializerOptions)),
+            "product");
+        request.Content = content;
 
         var response = await _httpClient.SendAsync(request, CancellationToken.None);
 
@@ -127,7 +134,7 @@ public class ApiProductService : IProductService
         _logger.LogError("-----> object not created. Error: {StatusCode}",
             response.StatusCode);
         return ResponseData<Product>
-            .Error($"Объект не добавлен. Error: {response.StatusCode}");
+            .Error($"Object not created. Error: {response.StatusCode}");
     }
 
     public async Task UpdateProductAsync(int id, Product product, IFormFile? formFile)
@@ -137,9 +144,16 @@ public class ApiProductService : IProductService
             Method = HttpMethod.Put,
             RequestUri = new Uri($"{_httpClient.BaseAddress}{id}")
         };
-        request.Content =
-            new StringContent(JsonSerializer.Serialize(product, _serializerOptions),
-                Encoding.UTF8, "application/json");
+
+        var content = new MultipartFormDataContent();
+        if (formFile is not null)
+        {
+            var streamContent = new StreamContent(formFile.OpenReadStream());
+            content.Add(streamContent, "file", formFile.FileName);
+        }
+        content.Add(new StringContent(JsonSerializer.Serialize(product, _serializerOptions)),
+            "product");
+        request.Content = content;
 
         await _httpClient.SendAsync(request, CancellationToken.None);
     }

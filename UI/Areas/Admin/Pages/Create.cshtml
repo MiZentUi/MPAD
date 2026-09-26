@@ -1,0 +1,42 @@
+@page
+@model UI.Areas.Admin.Pages.CreateModel
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="mb-3">
+                <label asp-for="Product.Name" class="form-label"></label>
+                <input asp-for="Product.Name" class="form-control" />
+                <span asp-validation-for="Product.Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Product.Description" class="form-label"></label>
+                <input asp-for="Product.Description" class="form-control" />
+                <span asp-validation-for="Product.Description" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Product.Service.Id" class="form-label">Service</label>
+                <select asp-for="Product.Service.Id" class="form-select"
+                        asp-items="@(new SelectList(Model.Services, "Id", "Name"))">
+                </select>
+                <span asp-validation-for="Product.Service.Id" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Image" class="form-label"></label>
+                <input type="file" asp-for="Image" class="form-control" accept="image/*" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg"></i> Create
+                </button>
+                <a class="btn btn-outline-secondary" asp-page="Index">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

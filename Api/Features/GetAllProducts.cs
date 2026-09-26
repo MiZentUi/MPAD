@@ -13,7 +13,7 @@ public static class GetAllProducts
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("api/Product/{serviceNormalizedName:alpha?}", Handler)
+            app.MapGet("api/product/{serviceNormalizedName:alpha?}", Handler)
                 .DisableAntiforgery()
                 .WithName("GetAllProducts")
                 .WithTags("Products");

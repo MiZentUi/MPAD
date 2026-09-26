@@ -1,0 +1,81 @@
+@page
+@model UI.Areas.Admin.Pages.IndexModel
+
+@{
+    int totalPages = Model.TotalPages;
+    int prev = Model.CurrentPage == 1 ? 1 : Model.CurrentPage - 1;
+    int next = Model.CurrentPage == totalPages ? totalPages : Model.CurrentPage + 1;
+}
+
+<h1>Products</h1>
+
+<p>
+    <a class="btn btn-primary" asp-page="Create">
+        <i class="bi bi-plus-circle"></i> Create New
+    </a>
+</p>
+
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Product[0].Image)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product[0].Description)
+            </th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Product)
+        {
+            <tr>
+                <td>
+                    <img src="@item.Image" alt="@item.Name" class="img-thumbnail" style="width: 80px; height: auto;" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td class="text-end text-nowrap">
+                    <a class="btn btn-sm btn-outline-primary" asp-page="./Edit" asp-route-id="@item.Id" title="Edit">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a class="btn btn-sm btn-outline-primary" asp-page="./Details" asp-route-id="@item.Id" title="Details">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a class="btn btn-sm btn-outline-danger" asp-page="./Delete" asp-route-id="@item.Id" title="Delete">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Pages">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+            <a class="page-link" asp-page="./Index" asp-route-pageNo="@prev" aria-label="Previous">
+                <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+            </a>
+        </li>
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a class="page-link" asp-page="./Index" asp-route-pageNo="@i">@i</a>
+            </li>
+        }
+        <li class="page-item @(Model.CurrentPage == totalPages ? "disabled" : "")">
+            <a class="page-link" asp-page="./Index" asp-route-pageNo="@next" aria-label="Next">
+                <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+            </a>
+        </li>
+    </ul>
+</nav>

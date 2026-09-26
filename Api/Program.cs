@@ -18,6 +18,8 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 await DbInitializer.SeedData(app);

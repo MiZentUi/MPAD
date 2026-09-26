@@ -1,8 +1,10 @@
+using System.Text.Json;
 using Api.Abstractions;
 using Api.Data;
+using Api.Use_Cases;
 using Domain.Entities;
-using FluentValidation;
-using Microsoft.AspNetCore.Http;
+using Domain.Models;
+using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,27 +12,13 @@ namespace Api.Features;
 
 public static class AddNewProduct
 {
-    public sealed record RequestDTO(string Name, string Description, int ServiceId);
-
-    public class RequestValidator : AbstractValidator<RequestDTO>
-    {
-        public RequestValidator()
-        {
-            RuleFor(r => r.Name)
-                .NotEmpty()
-                .MaximumLength(100);
-            RuleFor(r => r.Description)
-                .NotEmpty();
-            RuleFor(r => r.ServiceId)
-                .GreaterThan(0);
-        }
-    }
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("api/Product", Handler)
+            app.MapPost("api/product", Handler)
                 .DisableAntiforgery()
                 .WithName("CreateProduct")
                 .WithTags("Products");
@@ -38,33 +26,49 @@ public static class AddNewProduct
     }
 
     public static async Task<IResult> Handler(
-        [FromBody] RequestDTO request,
+        [FromForm] string product,
+        [FromForm] IFormFile? file,
         AppDbContext db,
-        IValidator<RequestDTO> validator)
+        IMediator mediator)
     {
-        var validationResult = await validator.ValidateAsync(request);
-        if (!validationResult.IsValid)
+        var request = JsonSerializer.Deserialize<Product>(product, JsonOptions);
+        if (request is null)
         {
-            return TypedResults.BadRequest(
-                error: validationResult.Errors.Select(e => e.ErrorMessage));
+            return TypedResults.BadRequest(error: "Invalid product data");
         }
 
-        var serviceExists = db.Services.Any(s => s.Id == request.ServiceId);
-        if (!serviceExists)
+        if (string.IsNullOrWhiteSpace(request.Name) ||
+            string.IsNullOrWhiteSpace(request.Description))
         {
-            return TypedResults.BadRequest(error: "No such service");
+            return TypedResults.BadRequest(error: "Name and description are required");
         }
 
         var newProduct = new Product
         {
             Name = request.Name,
-            Description = request.Description,
-            Service = db.Services.First(s => s.Id == request.ServiceId)
+            Description = request.Description
         };
+
+        if (request.Service is not null)
+        {
+            var service = await db.Services.FindAsync(request.Service.Id);
+            if (service is null)
+            {
+                return TypedResults.BadRequest(error: "No such service");
+            }
+            newProduct.Service = service;
+        }
+
+        if (file is not null)
+        {
+            newProduct.Image = await mediator.Send(new SaveImage(file));
+        }
 
         db.Products.Add(newProduct);
         await db.SaveChangesAsync();
 
-        return TypedResults.Created($"/api/Product/{newProduct.Id}", newProduct);
+        return TypedResults.Created(
+            $"/api/product/{newProduct.Id}",
+            ResponseData<Product>.Success(newProduct));
     }
 }

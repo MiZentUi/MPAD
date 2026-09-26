@@ -1,0 +1,41 @@
+@page
+@model UI.Areas.Admin.Pages.DetailsModel
+
+<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.Image)
+        </dt>
+        <dd class="col-sm-10">
+            <img src="@Model.Product.Image" alt="@Model.Product.Name" class="img-thumbnail" style="width: 120px; height: auto;" />
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.Service)
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.Product.Service?.Name ?? "—")
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-primary" asp-page="./Edit" asp-route-id="@Model.Product.Id">
+        <i class="bi bi-pencil"></i> Edit
+    </a>
+    <a class="btn btn-outline-secondary" asp-page="./Index">
+        <i class="bi bi-arrow-left"></i> Back to List
+    </a>
+</div>

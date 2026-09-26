@@ -4,6 +4,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
 builder.RegisterCustomServices();
 
 var app = builder.Build();
@@ -14,6 +16,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",
