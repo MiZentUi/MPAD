@@ -21,7 +21,8 @@ public static class AddNewProduct
             app.MapPost("api/product", Handler)
                 .DisableAntiforgery()
                 .WithName("CreateProduct")
-                .WithTags("Products");
+                .WithTags("Products")
+                .RequireAuthorization("admin");
         }
     }
 

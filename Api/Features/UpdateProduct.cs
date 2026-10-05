@@ -22,7 +22,8 @@ public static class UpdateProduct
             app.MapPut("api/product/{id:int}", Handler)
                 .DisableAntiforgery()
                 .WithName("UpdateProduct")
-                .WithTags("Products");
+                .WithTags("Products")
+                .RequireAuthorization("admin");
         }
     }
 

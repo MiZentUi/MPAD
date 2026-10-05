@@ -16,7 +16,8 @@ public static class DeleteProduct
             app.MapDelete("api/product/{id:int}", Handler)
                 .DisableAntiforgery()
                 .WithName("DeleteProduct")
-                .WithTags("Products");
+                .WithTags("Products")
+                .RequireAuthorization("admin");
         }
     }
 

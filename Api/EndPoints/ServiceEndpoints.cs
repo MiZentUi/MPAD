@@ -10,7 +10,10 @@ public static class ServiceEndpoints
 {
     public static void MapServiceEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/Service");
+        var group = routes.MapGroup("/api/Service")
+            .WithTags(nameof(Service))
+            .DisableAntiforgery()
+            .RequireAuthorization("admin");
 
         group.MapGet("/",
             async (AppDbContext db) =>
@@ -22,6 +25,7 @@ public static class ServiceEndpoints
                     ResponseData<List<Service>>.Success(services));
             })
             .WithName("GetAllServices")
-            .WithOpenApi();
+            .WithOpenApi()
+            .AllowAnonymous();
     }
 }

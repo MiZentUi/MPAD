@@ -16,7 +16,8 @@ public static class GetProductById
             app.MapGet("api/product/{id:int}", Handler)
                 .DisableAntiforgery()
                 .WithName("GetProductById")
-                .WithTags("Products");
+                .WithTags("Products")
+                .AllowAnonymous();
         }
     }
 

@@ -1,3 +1,4 @@
+using UI.HelperClasses;
 using UI.Models;
 using UI.Services.ProductService;
 using UI.Services.ServiceService;
@@ -15,5 +16,7 @@ public static class HostingExtensions
 
         builder.Services.AddHttpClient<IProductService, ApiProductService>(
             opt => opt.BaseAddress = new Uri(uriData.ApiUri + "Product/"));
+
+        builder.Services.Configure<KeycloakData>(builder.Configuration.GetSection("Keycloak"));
     }
 }

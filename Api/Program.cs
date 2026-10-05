@@ -2,8 +2,34 @@ using Api.Data;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Api.EndPoints;
+using Api.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var authServer = builder.Configuration
+    .GetSection("AuthServer")
+    .Get<AuthServerData>();
+
+// Добавить сервис аутентификации
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
+{
+    // Адрес метаданных конфигурации OpenID
+    o.MetadataAddress = $"{authServer.Host}/realms/{authServer.Realm}/.well-known/openid-configuration";
+    // Authority сервера аутентификации
+    o.Authority = $"{authServer.Host}/realms/{authServer.Realm}";
+    // Audience для токена JWT
+    o.Audience = "account";
+    // Запретить HTTPS для использования локальной версии Keycloak
+    // В рабочем проекте должно быть true
+    o.RequireHttpsMetadata = false;
+});
+
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("admin", p => p.RequireRole("POWER-USER"));
+});
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
@@ -34,5 +60,7 @@ app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.MapIEndpoints();
 app.MapServiceEndpoints();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

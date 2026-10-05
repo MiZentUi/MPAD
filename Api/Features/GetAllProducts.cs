@@ -16,7 +16,8 @@ public static class GetAllProducts
             app.MapGet("api/product/{serviceNormalizedName:alpha?}", Handler)
                 .DisableAntiforgery()
                 .WithName("GetAllProducts")
-                .WithTags("Products");
+                .WithTags("Products")
+                .AllowAnonymous();
         }
     }
 

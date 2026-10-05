@@ -31,6 +31,26 @@ services:
     depends_on:
     - postgres
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.4
+    container_name: keycloak
+    command: start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_PORT: 5432
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    ports:
+    - "8080:8080"
+    networks:
+    - postgres_network
+    depends_on:
+    - postgres
+    restart: unless-stopped
+
 volumes:
   postgres_data:
     driver: local
