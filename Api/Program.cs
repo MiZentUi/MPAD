@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Api.EndPoints;
 using Api.Models;
+using Api.Services.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 var authServer = builder.Configuration
     .GetSection("AuthServer")
     .Get<AuthServerData>();
+
+var keycloak = builder.Configuration
+    .GetSection("Keycloak")
+    .Get<KeycloakData>();
 
 // Добавить сервис аутентификации
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -45,6 +50,10 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddHttpClient<ITokenAccessor, KeycloakTokenAccessor>();
+builder.Services.Configure<KeycloakData>(builder.Configuration.GetSection("Keycloak"));
+builder.Services.AddSingleton(keycloak!);
 
 var app = builder.Build();
 

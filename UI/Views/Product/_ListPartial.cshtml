@@ -1,0 +1,33 @@
+@model ListModel<Product>
+
+@{
+    var request = ViewContext.HttpContext.Request;
+    var returnUrl = request.Path + request.QueryString.ToUriComponent();
+    string? service = request.Query["service"].ToString();
+    if (string.IsNullOrEmpty(service))
+    {
+        service = null;
+    }
+}
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var item in Model.Items)
+    {
+        <div class="col">
+            <div class="card">
+                <img src="@item.Image" class="card-img-top" alt="@item.Name" />
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text">@item.Description</p>
+                </div>
+                <div class="card-footer d-flex justify-content-center">
+                    <a type="button" class="btn btn-primary" asp-controller="cart"
+                       asp-action="Add" asp-route-id="@item.Id" asp-route-return-url="@returnUrl">Add to
+                        cart</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<Pager current-page="@Model.CurrentPage" total-pages="@Model.TotalPages" service="@service"></Pager>

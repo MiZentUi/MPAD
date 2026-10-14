@@ -1,12 +1,6 @@
 @page
 @model UI.Areas.Admin.Pages.IndexModel
 
-@{
-    int totalPages = Model.TotalPages;
-    int prev = Model.CurrentPage == 1 ? 1 : Model.CurrentPage - 1;
-    int next = Model.CurrentPage == totalPages ? totalPages : Model.CurrentPage + 1;
-}
-
 <h1>Products</h1>
 
 <p>
@@ -59,23 +53,4 @@
     </tbody>
 </table>
 
-<nav aria-label="Pages">
-    <ul class="pagination justify-content-center">
-        <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
-            <a class="page-link" asp-page="./Index" asp-route-pageNo="@prev" aria-label="Previous">
-                <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
-            </a>
-        </li>
-        @for (int i = 1; i <= totalPages; i++)
-        {
-            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                <a class="page-link" asp-page="./Index" asp-route-pageNo="@i">@i</a>
-            </li>
-        }
-        <li class="page-item @(Model.CurrentPage == totalPages ? "disabled" : "")">
-            <a class="page-link" asp-page="./Index" asp-route-pageNo="@next" aria-label="Next">
-                <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
-            </a>
-        </li>
-    </ul>
-</nav>
+<Pager current-page="@Model.CurrentPage" total-pages="@Model.TotalPages" admin="true"></Pager>

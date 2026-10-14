@@ -2,12 +2,18 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using UI.Extensions;
 using UI.HelperClasses;
+using UI.Services.FileService;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddSingleton<IFileService, LocalFileService>();
 
 builder.RegisterCustomServices();
 
@@ -41,6 +47,7 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

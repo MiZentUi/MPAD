@@ -1,20 +1,5 @@
 @model ListModel<Product>
 
-@{
-    var request = ViewContext.HttpContext.Request;
-    var returnUrl = request.Path + request.QueryString.ToUriComponent();
-    string? service = request.Query["service"].ToString();
-
-    string GetActiveClass(string name)
-    {
-        return ViewContext.RouteData.Values["controller"]?.ToString() == name ? "active" : "";
-    }
-
-    int totalPages = Model.TotalPages;
-    int prev = Model.CurrentPage == 1 ? 1 : Model.CurrentPage - 1;
-    int next = Model.CurrentPage == totalPages ? totalPages : Model.CurrentPage + 1;
-}
-
 <!DOCTYPE html>
 
 <html lang="en">
@@ -49,51 +34,10 @@
         </ul>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var item in Model.Items)
-        {
-            <div class="col">
-                <div class="card">
-                    <img src="@item.Image" class="card-img-top" alt="@item.Name" />
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Name</h5>
-                        <p class="card-text">@item.Description</p>
-                    </div>
-                    <div class="card-footer d-flex justify-content-center">
-                        <a type="button" class="btn btn-primary @GetActiveClass("Cart")" asp-controller="cart"
-                           asp-action="Add" asp-route-id="@item.Id" asp-route-return-url="@returnUrl">Add to
-                            cart</a>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
+    <div id="product-list">
+        <partial name="_ListPartial" model="Model" />
     </div>
-    <nav class="d-flex justify-content-center" aria-label="Pages">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" aria-label="Previous" asp-controller="Product" asp-route-service="@service"
-                   asp-route-pageno="@prev">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            @for (int i = 1; i <= totalPages; i++)
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-controller="Product" asp-route-service="@service" asp-route-pageno="@i">
-                        @i
-                    </a>
-                </li>
-            }
-            <li class="page-item">
-                <a class="page-link" aria-label="Next" asp-controller="Product" asp-route-service="@service"
-                   asp-route-pageno="@next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-    
+
 </body>
 
 </html>
