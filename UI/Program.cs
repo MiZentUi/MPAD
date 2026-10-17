@@ -1,12 +1,18 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Serilog;
 using UI.Extensions;
 using UI.HelperClasses;
+using UI.Middleware;
 using UI.Models;
 using UI.Services.FileService;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -49,6 +55,8 @@ builder.Services
 builder.Services.AddAuthorization(opt => opt.AddPolicy("admin", p => p.RequireRole("POWER-USER")));
 
 var app = builder.Build();
+
+app.UseRequestLogging();
 
 app.UseHttpsRedirection();
 app.UseRouting();
