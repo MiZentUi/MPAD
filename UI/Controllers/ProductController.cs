@@ -18,9 +18,16 @@ public class ProductController(IProductService productService, IServiceService s
         if (Request.IsAjaxRequest())
             return PartialView("_ListPartial", productResponse.Data);
 
-        var services = await serviceService.GetServiceListAsync();
-        ViewBag.Services = services.Data;
-        ViewBag.CurrentService = null;
+        // get the list of services (categories)
+        var servicesResponse = await serviceService.GetServiceListAsync();
+        // if the list is not retrieved, return 404
+        if (!servicesResponse.Successfull)
+            return NotFound(servicesResponse.ErrorMessage);
+
+        ViewBag.Services = servicesResponse.Data;
+        ViewBag.CurrentService = service == null
+            ? "All"
+            : servicesResponse.Data?.FirstOrDefault(s => s.NormalizedName == service)?.Name;
         ViewBag.CurrentPage = pageNo;
 
         return View(productResponse.Data);

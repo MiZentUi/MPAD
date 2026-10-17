@@ -36,6 +36,12 @@ public class GetListOfProductsHandler(AppDbContext db) :
         var page = Math.Max(1, request.pageNo);
         var totalPages = (int)Math.Ceiling(totalCount / (double)size);
 
+        if (page > totalPages)
+        {
+            return ResponseData<ListModel<Product>>.Error(
+                $"Page {page} does not exist, total pages: {totalPages}");
+        }
+
         var items = await query
             .Skip(size * (page - 1))
             .Take(size)
