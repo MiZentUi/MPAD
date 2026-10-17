@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace UI.Components;
 
-public class CartViewComponent : ViewComponent
+public class CartViewComponent(Cart cart) : ViewComponent
 {
-    public async Task<IViewComponentResult> InvokeAsync()
+    private readonly Cart _cart = cart;
+
+    public IViewComponentResult Invoke()
     {
-        return View(new CartViewModel { Price = 9.99M, Count = 3 });
+        return View(new CartViewModel { Price = 0M, Count = _cart.Count });
     }
 }

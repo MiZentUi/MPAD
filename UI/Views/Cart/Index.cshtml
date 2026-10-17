@@ -1,0 +1,46 @@
+@model Cart
+
+<h1>Cart</h1>
+
+@if (Model.CartItems.Count == 0)
+{
+    <p>Cart is empty.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Count</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in Model.CartItems.Values)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(entry.Item?.Image))
+                        {
+                            <img src="@entry.Item.Image" alt="@entry.Item.Name" width="80" />
+                        }
+                    </td>
+                    <td>@entry.Item?.Name</td>
+                    <td>@entry.Count</td>
+                    <td>
+                        <a class="btn btn-sm btn-danger" asp-controller="Cart" asp-action="Remove"
+                           asp-route-id="@entry.Item?.Id">Remove</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p>Total items: @Model.Count</p>
+
+    <a class="btn btn-secondary" asp-controller="Cart" asp-action="Clear">Clear cart</a>
+}
+
+<a class="btn btn-link" asp-controller="Product" asp-action="Index">Back to catalog</a>

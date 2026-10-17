@@ -51,6 +51,13 @@ builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddHybridCache();
+builder.Services.AddStackExchangeRedisCache(opt =>
+{
+    opt.InstanceName = "labs_";
+    opt.Configuration = builder.Configuration.GetConnectionString("Redis");
+});
+
 builder.Services.AddHttpClient<ITokenAccessor, KeycloakTokenAccessor>();
 builder.Services.Configure<KeycloakData>(builder.Configuration.GetSection("Keycloak"));
 builder.Services.AddSingleton(keycloak!);

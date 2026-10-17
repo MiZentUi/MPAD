@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using UI.Extensions;
 using UI.HelperClasses;
+using UI.Models;
 using UI.Services.FileService;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +14,12 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+
 builder.Services.AddSingleton<IFileService, LocalFileService>();
+
+builder.Services.AddScoped<Cart>(sp => SessionCart.GetCart(sp));
 
 builder.RegisterCustomServices();
 
@@ -47,6 +53,8 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseSession();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -59,5 +67,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+app.MapControllers();
 
 app.Run();

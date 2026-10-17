@@ -7,6 +7,8 @@ namespace UI.Controllers;
 
 public class ProductController(IProductService productService, IServiceService serviceService) : Controller
 {
+    [Route("Catalog")]
+    [Route("Catalog/{service?}")]
     public async Task<IActionResult> Index(string? service, int pageNo = 1)
     {
         var productResponse = await productService.GetProductListAsync(service, pageNo);
